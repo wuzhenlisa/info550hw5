@@ -10,13 +10,11 @@ figure/figure1.png: R/figure1.R DATAA/breast_cancer.csv
 figure/figure2.png: R/figure2.R DATAA/breast_cancer.csv
 	Rscript R/figure2.R
 
+## clean        : Remove compiled report and figures.
 .PHONY: clean
 clean:
-	rm report.html 
+	rm -f Rmarkdown/report.html figure/figure1.png figure/figure2.png
 
 .PHONY: help
-help:
-    @echo "report.html : Generate final analysis report."
-    @echo "figure1.png    : Make a plot between concavity mean and compactness mean for all participants."
-    @echo "figure2.png    : Make a plot between concavity mean and compactness mean grouped by diagnosis. "	
-    @echo "clean       : Remove report."
+help: Makefile
+	@sed -n 's/^##//p' $<

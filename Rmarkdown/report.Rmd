@@ -14,7 +14,7 @@ breastcancer <- read.csv(here::here('DATAA', 'breast_cancer.csv'))
 ```
 
 ## Summary of Descriptive Statistcs 
-```{r,echo = FALSE}
+```{r,include = FALSE}
 library(here)
 library(table1)
 library(ggplot2)
@@ -53,6 +53,8 @@ pvalue <- function(x, ...) {
   # The initial empty string places the output on the line below the variable label.
   c("", sub("<", "&lt;", format.pval(p, digits=3, eps=0.001)))
 }
+```
+```{r,echo=FALSE}
 table1(~radius_mean+texture_mean+perimeter_mean+area_mean+smoothness_mean+
          compactness_mean+concavity_mean+concave_points_mean+
          symmetry_mean+fractal_dimension_mean|diagnosis,data=breastcancer,

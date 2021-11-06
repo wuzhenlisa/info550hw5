@@ -1,0 +1,4 @@
+"0","knitr::include_graphics(here::here(""table"", ""tabel1 .png""))"
+"2","Error in knitr::include_graphics(here::here(""table"", ""tabel1 .png"")) : 
+  Cannot find the file(s): ""E:/Emory_study/Info550/INFO_550_HW4/table/tabel1 .png""
+"

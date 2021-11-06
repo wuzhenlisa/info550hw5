@@ -1,0 +1,30 @@
+---
+title: "INFO550HW4"
+author: "Zhen Wu"
+date: "11/5/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+here::i_am("Rmarkdown/report.rmd")
+knitr::opts_knit$set(root.dir = here::here())
+library(here)
+library(knitr)
+breastcancer <- read.csv(here::here('DATAA', 'breast_cancer.csv'))
+```
+
+## Summary of Descriptive Statistcs 
+```{r,echo = FALSE}
+#knitr::include_graphics(here::here("table", "tabel1.png"))
+```
+
+`r nrow(breastcancer)` subjects included in the study. `r sum(breastcancer$diagnosis=="Benign Breast Cancer")`  subjects were diagnosed as benign breast cancer while `r sum(breastcancer$diagnosis=="Malignant Breast cancer")`subjects were diagnosed as malignant breast cancer. The radius mean of breast cancer among all subjects was `r round(mean(breastcancer$radius_mean),2)`. The perimeter mean of breast cancer among all subjects was `r round(mean(breastcancer$perimeter_mean),2)`.The texture mean of breast cancer among subjects was `r round(mean(breastcancer$texture_mean),2)`.The area mean of breast cancer among subjects was `r round(mean(breastcancer$area_mean),2)`. The radius mean and perimeter mean of breast cancer among benign group were statistically smaller than that among malignant group by t-test. It showed that radius and perimeter of breast cancer were two characteristics of malignant breast cancer.
+
+## Assess the association between concavity mean and compactness mean
+
+```{r,echo = FALSE}
+knitr::include_graphics(here::here("figure", "figure1.png"))
+knitr::include_graphics(here::here("figure", "figure2.png"))
+```
+
+The figures showed that compactness had positive correlation with concavity among all subjects. Among benign breast cancer group, concavity mean and compactness mean almost aggregated within 0.2. Among malignant breast cancer group, concavity mean had positive correlation with concavity and spreaded from 0.1 to 0.5. It showed that patients with malignant breast cancer usally had higher compactness and concavity compared to patients with benign breast cancer. When their compactness became higher, their concavity also became higher.

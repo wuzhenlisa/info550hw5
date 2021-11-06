@@ -1,0 +1,7 @@
+"0","here::i_am(""Rmarkdown/report.Rmd"")"
+"2","here() starts at E:/Emory_study/Info550/INFO_550_HW4
+"
+"0","knitr::opts_knit$set(root.dir = here::here())"
+"0","library(here)"
+"0","library(knitr)"
+"0","breastcancer <- read.csv(here::here('DATAA', 'breast_cancer.csv'))"

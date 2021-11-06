@@ -1,0 +1,17 @@
+
+library(here)
+library(ggplot2)
+
+here::i_am('R/figure1.R')
+breastcancer <- read.csv(here::here('DATAA', 'breast_cancer.csv'))
+png(here::here("figure", "figure1.png"),  width = 800, height = 500)
+# For all subjects
+ggplot(data = breastcancer,aes(x=concavity_mean,y=compactness_mean)) +  
+  geom_point() + 
+  xlab("Mean of Cancer Concavity")+
+  ylab("Mean of Compactness")+
+  ggtitle("The correlation between concavity mean and compactness mean")+   
+  theme_bw(base_size=14)+theme_minimal()
+dev.off()
+
+

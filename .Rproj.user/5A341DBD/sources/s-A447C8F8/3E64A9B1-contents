@@ -1,0 +1,73 @@
+library(here)
+library(table1)
+library(ggplot2)
+library(pander)
+here::i_am('Rscript/table1_and_figure.R')
+breastcancer <- read.csv(here::here('DATAA', 'breast_cancer.csv'))
+
+breastcancer$diagnosis <- 
+  factor(breastcancer$diagnosis, 
+         levels=c("B","M"),
+         labels=c("Benign Breast Cancer", 
+                  "Malignant Breast cancer"))
+
+label(breastcancer$radius_mean)<-"Mean of Cancer Radius"
+label(breastcancer$texture_mean)<-"Mean of Cancer Texture"
+label(breastcancer$perimeter_mean)<-"Mean of Cancer Perimeter"
+label(breastcancer$area_mean)<-"Mean of Cancer Area"
+label(breastcancer$smoothness_mean)<-"Mean of Cancer Smoothness"
+label(breastcancer$compactness_mean)<-"Mean of Cancer Compactness"
+label(breastcancer$concavity_mean)<-"Mean of Cancer Concavity"
+label(breastcancer$concave_points_mean)<-"Mean of Cancer Concave Points"
+label(breastcancer$symmetry_mean)<-"Mean of Cancer Symmetry"
+label(breastcancer$fractal_dimension_mean)<-"Mean of Cancer Fractal Dimension"
+pvalue <- function(x, ...) {
+  # Construct vectors of data y, and groups (strata) g
+  y <- unlist(x)
+  g <- factor(rep(1:length(x), times=sapply(x, length)))
+  if (is.numeric(y)) {
+    # For numeric variables, perform a standard 2-sample t-test
+    p <- t.test(y ~ g)$p.value
+  } else {
+    # For categorical variables, perform a chi-squared test of independence
+    p <- chisq.test(table(y, g))$p.value
+  }
+  # Format the p-value, using an HTML entity for the less-than sign.
+  # The initial empty string places the output on the line below the variable label.
+  c("", sub("<", "&lt;", format.pval(p, digits=3, eps=0.001)))
+}
+jpeg(here::here("tabel","table1.jpg"))
+pander(table_prep<-breastcancer%>%group_by(diagnosis)%>%summarize(mean_radius_mean=mean(radius_mean),
+                                                           mean_texture_mean=mean(texture_mean),
+                                                           mean_perimeter_mean=mean(perimeter_mean),
+                                                           mean_area_mean=mean(area_mean),
+                                                           mean_smoothness_mean=mean(smoothness_mean)),
+       style = "rmarkdown", split.tables = 120)
+
+dev.off()
+table1(~radius_mean+texture_mean+perimeter_mean+area_mean+
+         smoothness_mean+compactness_mean|diagnosis,data=breastcancer,
+       overall=F, extra.col=list(`P-value`=pvalue))
+
+
+
+png(here::here("figure", "figure1.png"),  width = 800, height = 480)
+# For all subjects
+ggplot(data = breastcancer,aes(x=concavity_mean,y=compactness_mean)) +  
+  geom_point() + 
+  xlab("Mean of Cancer Concavity")+
+  ylab("Mean of Compactness")+
+  ggtitle("The correlation between concavity mean and compactness mean")+   
+  theme_bw(base_size=14)+theme_minimal()
+dev.off()
+
+png(here::here("figure", "figure2.png"),width = 1200, height = 600)
+# Grouped by beningn and malignant groups
+ggplot(data = breastcancer,aes(x=concavity_mean,y=compactness_mean, color=diagnosis)) +  
+  geom_point() + 
+  xlab("Mean of Cancer Concavity")+
+  ylab("Mean of Compactness")+
+  ggtitle("The correlation between concavity mean and compactness mean grouped by diagnosis results")+   
+  theme_bw(base_size=10) +   facet_wrap(~ diagnosis)+theme_minimal()
+dev.off()
+
