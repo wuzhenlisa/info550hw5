@@ -1,0 +1,71 @@
+---
+title: "INFO550HW4"
+author: "Zhen Wu"
+date: "11/5/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+here::i_am("Rmarkdown/report.Rmd")
+knitr::opts_knit$set(root.dir = here::here())
+library(here)
+library(knitr)
+breastcancer <- read.csv(here::here('DATAA', 'breast_cancer.csv'))
+```
+
+## Summary of Descriptive Statistcs 
+```{r,echo = FALSE}
+library(here)
+library(table1)
+library(ggplot2)
+library(pander)
+here::i_am('R/table1_and_figure.R')
+breastcancer <- read.csv(here::here('DATAA', 'breast_cancer.csv'))
+
+breastcancer$diagnosis <- 
+  factor(breastcancer$diagnosis, 
+         levels=c("B","M"),
+         labels=c("Benign Breast Cancer", 
+                  "Malignant Breast cancer"))
+
+label(breastcancer$radius_mean)<-"Mean of Cancer Radius"
+label(breastcancer$texture_mean)<-"Mean of Cancer Texture"
+label(breastcancer$perimeter_mean)<-"Mean of Cancer Perimeter"
+label(breastcancer$area_mean)<-"Mean of Cancer Area"
+label(breastcancer$smoothness_mean)<-"Mean of Cancer Smoothness"
+label(breastcancer$compactness_mean)<-"Mean of Cancer Compactness"
+label(breastcancer$concavity_mean)<-"Mean of Cancer Concavity"
+label(breastcancer$concave_points_mean)<-"Mean of Cancer Concave Points"
+label(breastcancer$symmetry_mean)<-"Mean of Cancer Symmetry"
+label(breastcancer$fractal_dimension_mean)<-"Mean of Cancer Fractal Dimension"
+pvalue <- function(x, ...) {
+  # Construct vectors of data y, and groups (strata) g
+  y <- unlist(x)
+  g <- factor(rep(1:length(x), times=sapply(x, length)))
+  if (is.numeric(y)) {
+    # For numeric variables, perform a standard 2-sample t-test
+    p <- t.test(y ~ g)$p.value
+  } else {
+    # For categorical variables, perform a chi-squared test of independence
+    p <- chisq.test(table(y, g))$p.value
+  }
+  # Format the p-value, using an HTML entity for the less-than sign.
+  # The initial empty string places the output on the line below the variable label.
+  c("", sub("<", "&lt;", format.pval(p, digits=3, eps=0.001)))
+}
+table1(~radius_mean+texture_mean+perimeter_mean+area_mean+smoothness_mean+
+         compactness_mean+concavity_mean+concave_points_mean+
+         symmetry_mean+fractal_dimension_mean|diagnosis,data=breastcancer,
+       overall=F, extra.col=list(`P-value`=pvalue))
+```
+
+`r nrow(breastcancer)` subjects included in the study. `r sum(breastcancer$diagnosis=="Benign Breast Cancer")`  subjects were diagnosed as benign breast cancer while `r sum(breastcancer$diagnosis=="Malignant Breast cancer")`subjects were diagnosed as malignant breast cancer. The radius mean of breast cancer among all subjects was `r round(mean(breastcancer$radius_mean),2)`. The perimeter mean of breast cancer among all subjects was `r round(mean(breastcancer$perimeter_mean),2)`.The texture mean of breast cancer among subjects was `r round(mean(breastcancer$texture_mean),2)`.The area mean of breast cancer among subjects was `r round(mean(breastcancer$area_mean),2)`. The radius mean and perimeter mean of breast cancer among benign group were statistically smaller than that among malignant group by t-test. It showed that radius and perimeter of breast cancer were two characteristics of malignant breast cancer.
+
+## Assess the association between concavity mean and compactness mean
+
+```{r,echo = FALSE}
+knitr::include_graphics(here::here("figure", "figure1.png"))
+knitr::include_graphics(here::here("figure", "figure2.png"))
+```
+
+The figures showed that compactness had positive correlation with concavity among all subjects. Among benign breast cancer group, concavity mean and compactness mean almost aggregated within 0.2. Among malignant breast cancer group, concavity mean had positive correlation with concavity and spreaded from 0.1 to 0.5. It showed that patients with malignant breast cancer usally had higher compactness and concavity compared to patients with benign breast cancer. When their compactness became higher, their concavity also became higher.
