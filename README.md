@@ -1,6 +1,8 @@
 Steps:
 
-cd into INFO_550_HW4 and open R
-run renv::restore() to synchronize package library
-run make report from INFO_550_HW4 directory
-open Rmarkdown/report.html
+1. open sublime
+2. cd into info550hw5
+3. docker pull wuzhenlisa/info550
+4. docker build -t wuzhen_info550_hw5 .
+5. docker run -v ${PWD}:/project -it wuzhen_info550_hw5
+6. open Rmarkdown/report.html
